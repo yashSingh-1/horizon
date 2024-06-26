@@ -13,6 +13,7 @@ import CustomInput from "./CustomInput";
 import { authFormSchema } from "@/lib/utils";
 import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { getLoggedInUser, signIn, signUp } from "@/lib/actions/user.actions";
 
 const AuthForm = ({ type }: { type: string }) => {
   const [user, setUser] = useState(null);
@@ -45,25 +46,24 @@ const AuthForm = ({ type }: { type: string }) => {
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
     setisLoading(true);
-    alert("Is it woeking");
 
     try {
       // sign up with appwrite and create a plaid token
 
       if (type === "sign-up") {
-        // const newUser = await Signup(data)
-        // setUser(newUser)
+        const newUser = await signUp(data)
+        setUser(newUser)
       }
 
       if (type === "sign-in") {
-        // const response = await signIn({
-        //   email: data.email,
-        //   password: data.password,
-        // });
-
-        // if (response) {
-        //     router.push('/')
-        // }
+        const response = await signIn({
+          email: data.email,
+          password: data.password,
+        });
+        console.log("Sign in response", response)
+        if (response) {
+            router.push('/')
+        }
       }
     } catch (error) {
       console.log(error);
@@ -96,7 +96,7 @@ const AuthForm = ({ type }: { type: string }) => {
             {user ? "Link Account" : type === "sign-in" ? "Sign In" : "Sign Up"}
             <p className="text-16 font-normal tetx-gray-600">
               {user
-                ? "Link your account to get started"
+                ? "Redirecting"
                 : "Please enter your details"}
             </p>
           </h1>
